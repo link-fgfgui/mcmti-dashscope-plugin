@@ -1,0 +1,43 @@
+{
+    "schemaVersion": 1,
+    "id": "mcmti_dashscope",
+    "version": "${version}",
+    "name": "Microphone Text Input — DashScope Plugin",
+    "description": "DashScope ASR provider (paraformer-realtime-v2) plugin for Microphone Text Input.",
+    "authors": [
+        {
+            "name": "Jaffe2718",
+            "contact": {
+                "email": "qqyttwqeei@163.com",
+                "homepage": "https://space.bilibili.com/1671742926"
+            }
+        }
+    ],
+    "contact": {
+        "homepage": "https://modrinth.com/mod/mcmti",
+        "issues": "https://github.com/Jaffe2718/Microphone-Text-Input/issues",
+        "sources": "https://github.com/Jaffe2718/Microphone-Text-Input"
+    },
+    "license": "MIT",
+    "environment": "client",
+    "entrypoints": {
+        "client": [
+            "me.jaffe2718.mcmti.dashscope.fabric.DashScopePluginFabric"
+        ]
+    },
+    "depends": {
+        "fabricloader": "${compatibility_fabricloader_versions}",
+        "minecraft": "${compatibility_mc_versions}",
+        "midnightlib": "${compatibility_midnightlib_versions}",
+        "mcmti": "*"
+    },
+    "recommends": {
+        "fabric-api": "*"
+    },
+    "custom": {
+        "mcmti:plugin": {
+            "providerId": "dashscope",
+            "model": "paraformer-realtime-v2"
+        }
+    }
+}

@@ -1,0 +1,50 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+issueTrackerURL = "https://github.com/Jaffe2718/Microphone-Text-Input/issues"
+license = "MIT"
+
+[[mods]]
+modId = "mcmti_dashscope"
+version = "${version}"
+displayName = "Microphone Text Input — DashScope Plugin"
+authors = "Jaffe2718"
+description = '''
+DashScope ASR provider (paraformer-realtime-v2) plugin for Microphone Text Input.
+Install alongside mcmti; in mcmti config select ASR Provider = Plugin,
+Plugin Provider Id = dashscope.
+'''
+
+[[dependencies.mcmti_dashscope]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_versionRange}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.mcmti_dashscope]]
+modId = "minecraft"
+type = "required"
+versionRange = "${mc_versionRange}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.mcmti_dashscope]]
+modId = "midnightlib"
+mandatory = true
+versionRange = "[1.0,)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.mcmti_dashscope]]
+modId = "architectury"
+mandatory = true
+versionRange = "${architectury_versionRange}"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.mcmti_dashscope]]
+modId = "mcmti"
+mandatory = true
+versionRange = "[2.2.1,)"
+ordering = "AFTER"
+side = "CLIENT"

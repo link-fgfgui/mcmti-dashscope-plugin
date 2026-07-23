@@ -1,0 +1,64 @@
+plugins {
+    id 'com.gradleup.shadow'
+}
+
+architectury {
+    platformSetupLoomIde()
+    neoForge()
+}
+
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentNeoForge.extendsFrom common
+
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+dependencies {
+    neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
+    modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
+    modImplementation "maven.modrinth:midnightlib:${rootProject.midnightlib_version}-neoforge"
+
+    // mcmti SPI classes come transitively from :common (compileOnly).
+    // At runtime the user's mcmti-neoforge jar provides them.
+
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
+
+    // DashScope SDK + transitive deps bundled via Loom's include.
+    // On NeoForge, include() generates the jarjar metadata automatically.
+    include(implementation("com.alibaba:dashscope-sdk-java:$rootProject.dashscope_sdk_version"))
+}
+
+processResources {
+    inputs.property 'version', project.version
+
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand "version": project.version,
+               "neoforge_versionRange": project.neoforge_versionRange,
+               "architectury_versionRange": project.architectury_versionRange,
+               "mc_versionRange": project.mc_versionRange
+    }
+}
+
+tasks.named('runClient') {
+    jvmArgs '-Djava.awt.headless=false'
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    inputFile.set shadowJar.archiveFile
+    archiveFileName = "${rootProject.archives_name}-${rootProject.version}+${project.minecraft_version}-neoforge.jar"
+}
