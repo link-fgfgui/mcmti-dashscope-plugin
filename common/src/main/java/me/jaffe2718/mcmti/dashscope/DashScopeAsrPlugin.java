@@ -5,11 +5,11 @@ import me.jaffe2718.mcmti.asr.SpeechAsrClient;
 import me.jaffe2718.mcmti.asr.SpeechAsrClientPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * mcmti ASR plugin entry point for Alibaba DashScope.
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 public final class DashScopeAsrPlugin implements SpeechAsrClientPlugin {
 
     private static final Logger LOGGER =
-            Logger.getLogger(DashScopeAsrPlugin.class.getName());
+            LoggerFactory.getLogger(DashScopeAsrPlugin.class);
 
     @Override
     public @NotNull String providerId() {
@@ -54,16 +54,11 @@ public final class DashScopeAsrPlugin implements SpeechAsrClientPlugin {
                 ? config.requestTimeoutMs()
                 : 60_000;
 
-        LOGGER.log(Level.INFO,
-                "Creating DashScope ASR client: model={0}, language={1}, "
-                        + "languageHints={2}, timeoutMs={3}",
-                new Object[]{
-                        model,
-                        config.language(),
-                        hints == null ? "(auto)" : String.join(",", hints),
-                        timeoutMs
-                }
-        );
+        LOGGER.info("Creating DashScope ASR client: model={}, language={}, languageHints={}, timeoutMs={}",
+                model,
+                config.language(),
+                hints == null ? "(auto)" : String.join(",", hints),
+                timeoutMs);
 
         return new DashScopeAsrClient(
                 apiKey,
@@ -79,10 +74,8 @@ public final class DashScopeAsrPlugin implements SpeechAsrClientPlugin {
             key = System.getenv("DASHSCOPE_API_KEY");
         }
         if (key == null || key.isBlank()) {
-            LOGGER.warning(
-                    "DashScope API key is empty. Set mcmti's apiKey config "
-                            + "or the DASHSCOPE_API_KEY environment variable."
-            );
+            LOGGER.warn("DashScope API key is empty. Set mcmti's apiKey config "
+                    + "or the DASHSCOPE_API_KEY environment variable.");
             key = "";
         }
         return key;

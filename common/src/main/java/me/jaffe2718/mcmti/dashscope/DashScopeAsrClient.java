@@ -10,14 +10,15 @@ import me.jaffe2718.mcmti.asr.AsrResult;
 import me.jaffe2718.mcmti.asr.SpeechAsrClient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * DashScope streaming ASR client backed by {@code paraformer-realtime-v2}.
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
 public final class DashScopeAsrClient implements SpeechAsrClient {
 
     private static final Logger LOGGER =
-            Logger.getLogger(DashScopeAsrClient.class.getName());
+            LoggerFactory.getLogger(DashScopeAsrClient.class);
 
     /** Provider id reported back to mcmti. */
     public static final String PROVIDER_ID = "dashscope";
@@ -99,7 +100,11 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
         if (closed) {
             throw new AsrException("DashScope ASR client has been closed");
         }
-        if (request.pcmAudio().length == 0) {
+        int audioLen = request.pcmAudio().length;
+        LOGGER.info("transcribe() called: audioBytes={}, sampleRate={}, model={}",
+                audioLen, request.sampleRate(), model);
+        if (audioLen == 0) {
+            LOGGER.warn("transcribe() called with empty PCM — returning EMPTY");
             return AsrResult.EMPTY;
         }
 
@@ -107,20 +112,29 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
         Recognition recognizer = new Recognition();
 
         StringBuilder transcript = new StringBuilder();
+        AtomicInteger eventCount = new AtomicInteger(0);
+        AtomicInteger sentenceEndCount = new AtomicInteger(0);
         AtomicReference<@Nullable Exception> error = new AtomicReference<>();
         CountDownLatch done = new CountDownLatch(1);
 
         ResultCallback<RecognitionResult> callback = new ResultCallback<>() {
             @Override
             public void onEvent(RecognitionResult result) {
+                int idx = eventCount.incrementAndGet();
+                boolean isEnd = result.isSentenceEnd();
+                if (isEnd) {
+                    sentenceEndCount.incrementAndGet();
+                }
                 if (result.getSentence() == null) {
+                    LOGGER.debug("onEvent#{}: sentenceEnd={}, sentence=null", idx, isEnd);
                     return;
                 }
                 String text = result.getSentence().getText();
+                LOGGER.info("onEvent#{}: sentenceEnd={}, text='{}'", idx, isEnd, text);
                 if (text == null || text.isEmpty()) {
                     return;
                 }
-                if (result.isSentenceEnd()) {
+                if (isEnd) {
                     if (transcript.length() > 0) {
                         transcript.append(' ');
                     }
@@ -131,11 +145,14 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
 
             @Override
             public void onComplete() {
+                LOGGER.info("onComplete: totalEvents={}, sentenceEnds={}, transcript='{}'",
+                        eventCount.get(), sentenceEndCount.get(), transcript);
                 done.countDown();
             }
 
             @Override
             public void onError(Exception e) {
+                LOGGER.error("onError: {}: {}", e.getClass().getSimpleName(), e.getMessage(), e);
                 error.set(e);
                 done.countDown();
             }
@@ -143,29 +160,41 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
 
         try {
             recognizer.call(param, callback);
-        } catch (Exception e) {
+            LOGGER.info("recognizer.call() returned — WebSocket session started");
+        } catch (Throwable t) {
+            // Catch Throwable (not Exception) so NoClassDefFoundError /
+            // ExceptionInInitializerError from missing transitive deps
+            // (OkHttp/Okio/RxJava) are logged instead of silently killing
+            // the recognizer thread.
+            LOGGER.error("recognizer.call() threw: {}: {}",
+                    t.getClass().getSimpleName(), t.getMessage(), t);
             closeQuietly(recognizer);
             throw new AsrException(
                     "Failed to start DashScope recognition session: "
-                            + e.getMessage(),
-                    e
+                            + t.getClass().getSimpleName() + ": " + t.getMessage(),
+                    t instanceof Exception ? (Exception) t : new RuntimeException(t)
             );
         }
 
         // Stream PCM frames to the WebSocket
         byte[] pcm = request.pcmAudio();
         long sendStart = System.currentTimeMillis();
+        int framesSent = 0;
         try {
             for (int offset = 0; offset < pcm.length; offset += CHUNK_BYTES) {
                 int end = Math.min(offset + CHUNK_BYTES, pcm.length);
                 ByteBuffer frame = ByteBuffer.wrap(pcm, offset, end - offset);
                 recognizer.sendAudioFrame(frame);
+                framesSent++;
                 if (offset + CHUNK_BYTES < pcm.length) {
                     Thread.sleep(CHUNK_SLEEP_MS);
                 }
             }
+            LOGGER.info("All PCM frames sent ({} frames, {} bytes), calling stop()...",
+                    framesSent, pcm.length);
             // stop() blocks until onComplete/onError fires
             recognizer.stop();
+            LOGGER.info("recognizer.stop() returned");
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
             closeQuietly(recognizer);
@@ -174,6 +203,8 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
                     ie
             );
         } catch (Exception e) {
+            LOGGER.error("Audio streaming threw: {}: {}",
+                    e.getClass().getSimpleName(), e.getMessage(), e);
             closeQuietly(recognizer);
             throw new AsrException(
                     "DashScope ASR failed while sending audio: "
@@ -186,6 +217,7 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
         // with a bounded wait in case the SDK's stop() returns early.
         long remaining = timeoutMs - (System.currentTimeMillis() - sendStart);
         if (remaining > 0 && done.getCount() > 0) {
+            LOGGER.info("Waiting up to {}ms for completion (latch={})", remaining, done.getCount());
             try {
                 done.await(remaining, TimeUnit.MILLISECONDS);
             } catch (InterruptedException ie) {
@@ -216,6 +248,7 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
         }
 
         String text = transcript.toString().trim();
+        LOGGER.info("transcribe() returning: text='{}' (length={})", text, text.length());
         return new AsrResult(text, null);
     }
 
@@ -244,11 +277,7 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
         try {
             recognizer.getDuplexApi().close(1000, "bye");
         } catch (Exception e) {
-            LOGGER.log(Level.FINE,
-                    "Error closing DashScope WebSocket (ignorable): "
-                            + e.getMessage(),
-                    e
-            );
+            LOGGER.debug("Error closing DashScope WebSocket (ignorable): {}", e.getMessage(), e);
         }
     }
 

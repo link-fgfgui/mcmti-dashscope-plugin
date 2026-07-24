@@ -35,7 +35,16 @@ dependencies {
 
     // DashScope SDK + transitive deps bundled via Loom's include.
     // On NeoForge, include() generates the jarjar metadata automatically.
+    // MUST list each transitive dep explicitly — include() does NOT pull
+    // transitive deps of the included artifact, only the artifact itself.
+    // Gson is NOT included (Minecraft 1.21 ships gson 2.10.1 already).
     include(implementation("com.alibaba:dashscope-sdk-java:$rootProject.dashscope_sdk_version"))
+    include(implementation("com.squareup.okhttp3:okhttp:4.12.0"))
+    include(implementation("com.squareup.okhttp3:okhttp-sse:4.12.0"))
+    include(implementation("com.squareup.okhttp3:logging-interceptor:4.12.0"))
+    include(implementation("com.squareup.okio:okio:3.6.0"))
+    include(implementation("io.reactivex.rxjava2:rxjava:2.2.21"))
+    include(implementation("org.reactivestreams:reactive-streams:1.0.3"))
 }
 
 processResources {

@@ -16,5 +16,10 @@ dependencies {
     // DashScope SDK — compile against, bundle per-platform via JiJ
     compileOnly "com.alibaba:dashscope-sdk-java:$rootProject.dashscope_sdk_version"
 
+    // SLF4J API — runtime provided by Minecraft loader; compile-only here so
+    // plugin logs route through log4j2 (java.util.logging is NOT bridged by
+    // default and would be silently dropped from debug.log).
+    compileOnly 'org.slf4j:slf4j-api:2.0.16'
+
     modCompileOnly "maven.modrinth:midnightlib:${rootProject.midnightlib_version}-fabric"
 }
