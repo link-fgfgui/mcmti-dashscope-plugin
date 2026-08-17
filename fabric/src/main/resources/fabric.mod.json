@@ -29,15 +29,9 @@
         "fabricloader": "${compatibility_fabricloader_versions}",
         "minecraft": "${compatibility_mc_versions}",
         "midnightlib": "${compatibility_midnightlib_versions}",
-        "mcmti": "*"
+        "mcmti": ">=3.0.0"
     },
     "recommends": {
         "fabric-api": "*"
-    },
-    "custom": {
-        "mcmti:plugin": {
-            "providerId": "dashscope",
-            "model": "paraformer-realtime-v2"
-        }
     }
 }

@@ -81,3 +81,6 @@ usernamecache.json
 .env.local
 *.pem
 *.key
+
+# Architectury transformer
+.architectury-transformer/

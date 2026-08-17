@@ -7,7 +7,6 @@ import com.alibaba.dashscope.common.ResultCallback;
 import me.jaffe2718.mcmti.asr.AsrException;
 import me.jaffe2718.mcmti.asr.AsrRequest;
 import me.jaffe2718.mcmti.asr.AsrResult;
-import me.jaffe2718.mcmti.asr.SpeechAsrClient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -28,14 +27,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * {@link #transcribe(AsrRequest)} call opens a fresh WebSocket session, sends
  * all audio frames, signals stop, and awaits the final {@code onComplete}.
  *
- * <p>Thread-safety: a new {@link Recognition} instance is created per call, so
- * concurrent transcriptions are isolated. The client itself is stateless after
- * construction.
- *
  * @see <a href="https://help.aliyun.com/zh/model-studio/paraformer-real-time-speech-recognition-java-sdk">
  *      Paraformer 实时语音识别 Java SDK</a>
  */
-public final class DashScopeAsrClient implements SpeechAsrClient {
+public final class DashScopeAsrClient {
 
     private static final Logger LOGGER =
             LoggerFactory.getLogger(DashScopeAsrClient.class);
@@ -81,12 +76,10 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
         this.timeoutMs = timeoutMs;
     }
 
-    @Override
     public @NotNull String providerId() {
         return PROVIDER_ID;
     }
 
-    @Override
     public boolean isReady() {
         return !closed
                 && apiKey != null
@@ -95,7 +88,6 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
                 && !model.isBlank();
     }
 
-    @Override
     public @NotNull AsrResult transcribe(@NotNull AsrRequest request) throws AsrException {
         if (closed) {
             throw new AsrException("DashScope ASR client has been closed");
@@ -281,7 +273,6 @@ public final class DashScopeAsrClient implements SpeechAsrClient {
         }
     }
 
-    @Override
     public void close() {
         closed = true;
     }

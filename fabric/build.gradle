@@ -27,7 +27,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
     modImplementation "maven.modrinth:midnightlib:${rootProject.midnightlib_version}-fabric"
 
-    // mcmti SPI classes come transitively from :common (compileOnly).
+    modCompileOnly "me.jaffe2718:mcmti-common:3.0.0"
     // At runtime the user's mcmti-fabric jar provides them.
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }

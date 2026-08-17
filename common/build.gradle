@@ -5,13 +5,7 @@ architectury {
 dependencies {
     // Fabric Loader for @Environment annotations (remapped per-platform)
     modCompileOnly "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-
-    // mcmti SPI interfaces — pure-Java jar published from the mcmti fork's
-    // root project (see mcmti-patches/build.gradle). Plain compileOnly (not
-    // modCompileOnly) because the SPI jar has no minecraft/loom dependency.
-    // At runtime the same classes are provided by the mcmti mod jar; plugin
-    // mods must NOT bundle them.
-    compileOnly "${rootProject.mcmti_jitpack_group}:${rootProject.mcmti_jitpack_artifact}:${rootProject.mcmti_version}"
+    modCompileOnly "me.jaffe2718:mcmti-common:3.0.0"
 
     // DashScope SDK — compile against, bundle per-platform via JiJ
     compileOnly "com.alibaba:dashscope-sdk-java:$rootProject.dashscope_sdk_version"

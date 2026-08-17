@@ -24,10 +24,8 @@ configurations {
 
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
-    modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
     modImplementation "maven.modrinth:midnightlib:${rootProject.midnightlib_version}-neoforge"
-
-    // mcmti SPI classes come transitively from :common (compileOnly).
+    modCompileOnly "me.jaffe2718:mcmti-common:3.0.0"
     // At runtime the user's mcmti-neoforge jar provides them.
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
@@ -53,8 +51,8 @@ processResources {
     filesMatching('META-INF/neoforge.mods.toml') {
         expand "version": project.version,
                "neoforge_versionRange": project.neoforge_versionRange,
-               "architectury_versionRange": project.architectury_versionRange,
-               "mc_versionRange": project.mc_versionRange
+               "mc_versionRange": project.mc_versionRange,
+               "compatibility_midnightlib_versions": project.compatibility_midnightlib_versions
     }
 }
 

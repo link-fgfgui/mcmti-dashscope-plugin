@@ -1,33 +1,34 @@
 package me.jaffe2718.mcmti.dashscope.neoforge;
 
+import me.jaffe2718.mcmti.dashscope.DashScopeSpeechRecognizer;
+import me.jaffe2718.mcmti.dashscope.config.DashScopeConfig;
+import me.jaffe2718.mcmti.util.SpeechRecognizer;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * NeoForge entry point for mcmti-dashscope-plugin.
  * <p>
- * Provider registration is via Java {@link java.util.ServiceLoader} (same as
- * Fabric). This class only logs readiness and satisfies NeoForge's mod-loading
- * contract.
+ * Registers the DashScope {@link SpeechRecognizer} (mcmti 3.x API) with
+ * priority 0. See {@link me.jaffe2718.mcmti.dashscope.fabric.DashScopePluginFabric}
+ * for the priority rationale.
  */
-@Mod(value = "mcmti_dashscope", dist = Dist.CLIENT)
-@OnlyIn(Dist.CLIENT)
+@Mod(value = DashScopeConfig.MOD_ID, dist = Dist.CLIENT)
 public final class DashScopePluginNeoForge {
 
     private static final Logger LOGGER =
-            Logger.getLogger(DashScopePluginNeoForge.class.getName());
+            LoggerFactory.getLogger(DashScopePluginNeoForge.class);
 
-    public DashScopePluginNeoForge(@NotNull IEventBus modEventBus) {
-        LOGGER.log(Level.INFO,
-                "mcmti-dashscope-plugin loaded on NeoForge. "
-                        + "Select ASR Provider = PLUGIN, Plugin Provider Id = dashscope "
-                        + "in mcmti config to activate paraformer-realtime-v2."
+    public DashScopePluginNeoForge() {
+        DashScopeConfig.init(DashScopeConfig.MOD_ID, DashScopeConfig.class);
+        SpeechRecognizer.register(
+                0,
+                ResourceLocation.fromNamespaceAndPath(DashScopeConfig.MOD_ID, "dashscope"),
+                DashScopeSpeechRecognizer::new
         );
+        LOGGER.info("mcmti-dashscope-plugin: DashScope recognizer registered (priority 0)");
     }
 }

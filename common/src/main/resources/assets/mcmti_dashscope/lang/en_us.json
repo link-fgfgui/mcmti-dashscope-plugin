@@ -1,0 +1,12 @@
+{
+    "message.mcmti.dashscope.available": "DashScope recognizer is ready",
+    "message.mcmti.dashscope.unavailable": "DashScope recognizer is not configured — set the API key in the mcmti-dashscope config",
+    "mcmti_dashscope.midnightconfig.apiKey": "DashScope API Key",
+    "mcmti_dashscope.midnightconfig.apiKey.tooltip": "DashScope API key (sk-...). Leave empty to disable this recognizer.",
+    "mcmti_dashscope.midnightconfig.model": "Model",
+    "mcmti_dashscope.midnightconfig.model.tooltip": "Paraformer model id, e.g. paraformer-realtime-v2",
+    "mcmti_dashscope.midnightconfig.language": "Language",
+    "mcmti_dashscope.midnightconfig.language.tooltip": "auto, a single language (zh/en/...), or a comma/slash separated list",
+    "mcmti_dashscope.midnightconfig.requestTimeoutMs": "Request Timeout (ms)",
+    "mcmti_dashscope.midnightconfig.requestTimeoutMs.tooltip": "Total wall-clock budget for one recognition call"
+}

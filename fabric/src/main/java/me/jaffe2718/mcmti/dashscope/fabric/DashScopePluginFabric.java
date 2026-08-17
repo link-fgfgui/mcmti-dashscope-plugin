@@ -1,35 +1,35 @@
 package me.jaffe2718.mcmti.dashscope.fabric;
 
+import me.jaffe2718.mcmti.dashscope.DashScopeSpeechRecognizer;
+import me.jaffe2718.mcmti.dashscope.config.DashScopeConfig;
+import me.jaffe2718.mcmti.util.SpeechRecognizer;
 import net.fabricmc.api.ClientModInitializer;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Fabric client entry point for mcmti-dashscope-plugin.
  * <p>
- * The actual ASR provider registration is handled by Java's
- * {@link java.util.ServiceLoader} mechanism via
- * {@code META-INF/services/me.jaffe2718.mcmti.asr.SpeechAsrClientPlugin},
- * which mcmti discovers automatically. This entry point exists only to:
- * <ul>
- *   <li>Confirm the plugin loaded successfully</li>
- *   <li>Satisfy Fabric's mod loading (a mod without any entrypoint is valid
- *       but harder to debug)</li>
- * </ul>
+ * Registers the DashScope {@link SpeechRecognizer} (mcmti 3.x API) with
+ * priority 0 so that once the plugin config has an API key it becomes the
+ * active recognizer. Priority 0 (higher than the built-in recognizers' 100)
+ * means an explicitly-configured DashScope key wins; without a key the
+ * recognizer is disabled and selection falls through to the built-ins.
  */
 public final class DashScopePluginFabric implements ClientModInitializer {
 
     private static final Logger LOGGER =
-            Logger.getLogger(DashScopePluginFabric.class.getName());
+            LoggerFactory.getLogger(DashScopePluginFabric.class);
 
     @Override
     public void onInitializeClient() {
-        LOGGER.log(Level.INFO,
-                "mcmti-dashscope-plugin loaded on Fabric. "
-                        + "Select ASR Provider = PLUGIN, Plugin Provider Id = dashscope "
-                        + "in mcmti config to activate paraformer-realtime-v2."
+        DashScopeConfig.init(DashScopeConfig.MOD_ID, DashScopeConfig.class);
+        SpeechRecognizer.register(
+                0,
+                ResourceLocation.fromNamespaceAndPath(DashScopeConfig.MOD_ID, "dashscope"),
+                DashScopeSpeechRecognizer::new
         );
+        LOGGER.info("mcmti-dashscope-plugin: DashScope recognizer registered (priority 0)");
     }
 }
