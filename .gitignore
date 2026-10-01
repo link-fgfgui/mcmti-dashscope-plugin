@@ -75,7 +75,7 @@ usernamecache.json
 *.jar
 !gradle/wrapper/gradle-wrapper.jar
 
-# DashScope API key (never commit secrets)
+# Doubao / Volcengine API key (never commit secrets)
 .env
 .env.local
 *.pem

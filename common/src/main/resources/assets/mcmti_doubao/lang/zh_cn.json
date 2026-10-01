@@ -1,0 +1,20 @@
+{
+    "message.mcmti.doubao.available": "豆包语音识别已就绪",
+    "message.mcmti.doubao.unavailable": "豆包语音识别未配置 —— 请在 mcmti-doubao 配置中填写 API Key",
+    "mcmti_doubao.midnightconfig.title": "豆包插件配置",
+    "mcmti_doubao.midnightconfig.category.general": "通用配置",
+    "mcmti_doubao.midnightconfig.apiKey": "火山引擎 API Key",
+    "mcmti_doubao.midnightconfig.apiKey.tooltip": "火山引擎语音 API Key（通过 X-Api-Key 发送）。留空将禁用该识别器。",
+    "mcmti_doubao.midnightconfig.model": "模型",
+    "mcmti_doubao.midnightconfig.model.tooltip": "模型名称，目前仅支持 bigmodel",
+    "mcmti_doubao.midnightconfig.language": "语言",
+    "mcmti_doubao.midnightconfig.language.tooltip": "auto，或 zh-CN / en-US / ja-JP / yue-CN 等语种代码（支持 zh/en 简写）",
+    "mcmti_doubao.midnightconfig.enableItn": "逆文本规范化",
+    "mcmti_doubao.midnightconfig.enableItn.tooltip": "把口语化的数字、日期转成规范书面格式（“一九七零年” → “1970 年”）",
+    "mcmti_doubao.midnightconfig.enablePunc": "标点",
+    "mcmti_doubao.midnightconfig.enablePunc.tooltip": "在识别结果中添加逗号、句号等标点符号",
+    "mcmti_doubao.midnightconfig.enableDdc": "语义顺滑",
+    "mcmti_doubao.midnightconfig.enableDdc.tooltip": "删除停顿词、语气词和语义重复，让文本更连贯",
+    "mcmti_doubao.midnightconfig.requestTimeoutMs": "请求超时（毫秒）",
+    "mcmti_doubao.midnightconfig.requestTimeoutMs.tooltip": "单次识别请求的总时间预算"
+}

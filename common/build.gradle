@@ -26,9 +26,6 @@ dependencies {
     // common module compiles against Mojang mappings via legacyforge); the
     // loader modules pick the artifact matching their own loader.
     modCompileOnly "maven.modrinth:midnightlib:${midnightlib_version}-forge"
-
-    // DashScope SDK — compile against here; bundled per-platform via JiJ/jarJar.
-    compileOnly "com.alibaba:dashscope-sdk-java:${dashscope_sdk_version}"
 }
 
 configurations {

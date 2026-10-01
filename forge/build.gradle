@@ -50,31 +50,6 @@ dependencies {
     // classpath. Declared as a mod dependency so ModDev remaps the production
     // (SRG) jar to the dev mappings. Resolved from the local ./libs flatDir.
     modRuntimeOnly "me.jaffe2718:mcmti-forge:${minecraft_version}-3.0.0"
-
-    // DashScope SDK + transitive deps.
-    // `implementation` puts them on the dev compile/runtime classpath (the
-    // forge module also compiles the shared common/ sources, which import the
-    // SDK), while `jarJar` bundles them into the production jar.
-    // MUST list each transitive dep explicitly — jarJar does NOT pull
-    // transitive deps of the included artifact, only the artifact itself.
-    // Gson is NOT included (Minecraft 1.20.1 ships gson already).
-    implementation("com.alibaba:dashscope-sdk-java:${dashscope_sdk_version}") {
-        exclude group: 'com.google.code.gson'
-    }
-    implementation "com.squareup.okhttp3:okhttp:4.12.0"
-    implementation "com.squareup.okhttp3:okhttp-sse:4.12.0"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.12.0"
-    implementation "com.squareup.okio:okio:3.6.0"
-    implementation "io.reactivex.rxjava2:rxjava:2.2.21"
-    implementation "org.reactivestreams:reactive-streams:1.0.3"
-
-    jarJar "com.alibaba:dashscope-sdk-java:${dashscope_sdk_version}"
-    jarJar "com.squareup.okhttp3:okhttp:4.12.0"
-    jarJar "com.squareup.okhttp3:okhttp-sse:4.12.0"
-    jarJar "com.squareup.okhttp3:logging-interceptor:4.12.0"
-    jarJar "com.squareup.okio:okio:3.6.0"
-    jarJar "io.reactivex.rxjava2:rxjava:2.2.21"
-    jarJar "org.reactivestreams:reactive-streams:1.0.3"
 }
 
 tasks.named('runClient') {

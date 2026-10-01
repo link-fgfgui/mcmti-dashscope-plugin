@@ -1,8 +1,8 @@
-package me.jaffe2718.mcmti.dashscope.forge;
+package me.jaffe2718.mcmti.doubao.forge;
 
 import eu.midnightdust.lib.config.MidnightConfig;
-import me.jaffe2718.mcmti.dashscope.DashScopeSpeechRecognizer;
-import me.jaffe2718.mcmti.dashscope.config.DashScopeConfig;
+import me.jaffe2718.mcmti.doubao.DoubaoSpeechRecognizer;
+import me.jaffe2718.mcmti.doubao.config.DoubaoConfig;
 import me.jaffe2718.mcmti.util.SpeechRecognizer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.ConfigScreenHandler;
@@ -15,11 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Forge (1.20.1) entry point for mcmti-dashscope-plugin.
+ * Forge (1.20.1) entry point for mcmti-doubao-plugin.
  * <p>
- * Registers the DashScope {@link SpeechRecognizer} (mcmti 3.x API) with
- * priority 0. See {@link me.jaffe2718.mcmti.dashscope.fabric.DashScopePluginFabric}
- * for the priority rationale.
+ * Registers the Doubao {@link SpeechRecognizer} (mcmti 3.x API) with
+ * priority 0. See the Fabric entry point for the priority rationale.
  * <p>
  * The mod is client-only, so construction is a no-op on a dedicated server —
  * mirroring the parent mcmti mod's Forge entry point.
@@ -34,13 +33,13 @@ import org.slf4j.LoggerFactory;
  * explicitly because MidnightLib would otherwise wire it up before our config
  * instance exists.
  */
-@Mod(DashScopeConfig.MOD_ID)
-public final class DashScopePluginForge {
+@Mod(DoubaoConfig.MOD_ID)
+public final class DoubaoPluginForge {
 
     private static final Logger LOGGER =
-            LoggerFactory.getLogger(DashScopePluginForge.class);
+            LoggerFactory.getLogger(DoubaoPluginForge.class);
 
-    public DashScopePluginForge() {
+    public DoubaoPluginForge() {
         if (!FMLEnvironment.dist.isClient()) {
             return;
         }
@@ -49,7 +48,7 @@ public final class DashScopePluginForge {
                 ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory(
                         (minecraft, parent) ->
-                                MidnightConfig.getScreen(parent, DashScopeConfig.MOD_ID))
+                                MidnightConfig.getScreen(parent, DoubaoConfig.MOD_ID))
         );
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
@@ -58,16 +57,16 @@ public final class DashScopePluginForge {
     private void onClientSetup(FMLClientSetupEvent event) {
         // Run off the parallel setup thread, once the whole event dispatch has
         // finished, to avoid racing other mods' MidnightConfig usage.
-        event.enqueueWork(DashScopePluginForge::registerRecognizer);
+        event.enqueueWork(DoubaoPluginForge::registerRecognizer);
     }
 
     private static void registerRecognizer() {
-        DashScopeConfig.init(DashScopeConfig.MOD_ID, DashScopeConfig.class);
+        DoubaoConfig.init(DoubaoConfig.MOD_ID, DoubaoConfig.class);
         SpeechRecognizer.register(
                 0,
-                new ResourceLocation(DashScopeConfig.MOD_ID, "dashscope"),
-                DashScopeSpeechRecognizer::new
+                new ResourceLocation(DoubaoConfig.MOD_ID, "doubao"),
+                DoubaoSpeechRecognizer::new
         );
-        LOGGER.info("mcmti-dashscope-plugin: DashScope recognizer registered (priority 0)");
+        LOGGER.info("mcmti-doubao-plugin: Doubao recognizer registered (priority 0)");
     }
 }

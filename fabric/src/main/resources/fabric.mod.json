@@ -1,9 +1,9 @@
 {
     "schemaVersion": 1,
-    "id": "mcmti_dashscope",
+    "id": "mcmti_doubao",
     "version": "${version}",
-    "name": "Microphone Text Input — DashScope Plugin",
-    "description": "DashScope ASR provider (paraformer-realtime-v2) plugin for Microphone Text Input.",
+    "name": "Microphone Text Input — Doubao Plugin",
+    "description": "Doubao (Volcengine) big-model ASR provider plugin for Microphone Text Input.",
     "authors": [
         {
             "name": "Jaffe2718",
@@ -22,7 +22,7 @@
     "environment": "client",
     "entrypoints": {
         "client": [
-            "me.jaffe2718.mcmti.dashscope.fabric.DashScopePluginFabric"
+            "me.jaffe2718.mcmti.doubao.fabric.DoubaoPluginFabric"
         ]
     },
     "depends": {

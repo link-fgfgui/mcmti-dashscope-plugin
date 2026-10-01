@@ -1,0 +1,20 @@
+{
+    "message.mcmti.doubao.available": "Doubao recognizer is ready",
+    "message.mcmti.doubao.unavailable": "Doubao recognizer is not configured — set the API key in the mcmti-doubao config",
+    "mcmti_doubao.midnightconfig.title": "Doubao Plugin Config",
+    "mcmti_doubao.midnightconfig.category.general": "General Config",
+    "mcmti_doubao.midnightconfig.apiKey": "Volcengine API Key",
+    "mcmti_doubao.midnightconfig.apiKey.tooltip": "Speech API key from the Volcengine console (sent as X-Api-Key). Leave empty to disable this recognizer.",
+    "mcmti_doubao.midnightconfig.model": "Model",
+    "mcmti_doubao.midnightconfig.model.tooltip": "Model name, currently only bigmodel is supported",
+    "mcmti_doubao.midnightconfig.language": "Language",
+    "mcmti_doubao.midnightconfig.language.tooltip": "auto, or a code such as zh-CN / en-US / ja-JP / yue-CN (short forms like zh/en are accepted)",
+    "mcmti_doubao.midnightconfig.enableItn": "Inverse Text Normalization",
+    "mcmti_doubao.midnightconfig.enableItn.tooltip": "Convert spoken numbers/dates into regular written form (\"nineteen seventy\" → \"1970\")",
+    "mcmti_doubao.midnightconfig.enablePunc": "Punctuation",
+    "mcmti_doubao.midnightconfig.enablePunc.tooltip": "Add commas, periods and other punctuation to the transcript",
+    "mcmti_doubao.midnightconfig.enableDdc": "Semantic Smoothing",
+    "mcmti_doubao.midnightconfig.enableDdc.tooltip": "Remove filler words and repetitions for a smoother transcript",
+    "mcmti_doubao.midnightconfig.requestTimeoutMs": "Request Timeout (ms)",
+    "mcmti_doubao.midnightconfig.requestTimeoutMs.tooltip": "Total wall-clock budget for one recognition request"
+}
