@@ -1,6 +1,8 @@
 {
     "message.mcmti.dashscope.available": "DashScope recognizer is ready",
     "message.mcmti.dashscope.unavailable": "DashScope recognizer is not configured — set the API key in the mcmti-dashscope config",
+    "mcmti_dashscope.midnightconfig.title": "DashScope Plugin Config",
+    "mcmti_dashscope.midnightconfig.category.general": "General Config",
     "mcmti_dashscope.midnightconfig.apiKey": "DashScope API Key",
     "mcmti_dashscope.midnightconfig.apiKey.tooltip": "DashScope API key (sk-...). Leave empty to disable this recognizer.",
     "mcmti_dashscope.midnightconfig.model": "Model",

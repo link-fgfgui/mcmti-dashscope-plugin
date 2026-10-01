@@ -1,6 +1,8 @@
 {
     "message.mcmti.dashscope.available": "DashScope 语音识别已就绪",
     "message.mcmti.dashscope.unavailable": "DashScope 语音识别未配置 —— 请在 mcmti-dashscope 配置中填写 API Key",
+    "mcmti_dashscope.midnightconfig.title": "DashScope 插件配置",
+    "mcmti_dashscope.midnightconfig.category.general": "通用配置",
     "mcmti_dashscope.midnightconfig.apiKey": "DashScope API Key",
     "mcmti_dashscope.midnightconfig.apiKey.tooltip": "DashScope API Key（sk-...）。留空将禁用该识别器。",
     "mcmti_dashscope.midnightconfig.model": "模型",

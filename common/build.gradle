@@ -1,19 +1,48 @@
-architectury {
-    common rootProject.enabled_platforms.split(',')
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev.legacyforge'
+}
+
+legacyForge {
+    mcpVersion = minecraft_version
+    if (file("src/main/resources/META-INF/accesstransformer.cfg").exists()) {
+        accessTransformers = ["src/main/resources/META-INF/accesstransformer.cfg"]
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
 }
 
 dependencies {
-    // Fabric Loader for @Environment annotations (remapped per-platform)
-    modCompileOnly "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-    modCompileOnly "me.jaffe2718:mcmti-common:3.0.0"
-
-    // DashScope SDK — compile against, bundle per-platform via JiJ
-    compileOnly "com.alibaba:dashscope-sdk-java:$rootProject.dashscope_sdk_version"
-
-    // SLF4J API — runtime provided by Minecraft loader; compile-only here so
-    // plugin logs route through log4j2 (java.util.logging is NOT bridged by
-    // default and would be silently dropped from debug.log).
+    compileOnly 'org.jetbrains:annotations:26.0.2'
     compileOnly 'org.slf4j:slf4j-api:2.0.16'
 
-    modCompileOnly "maven.modrinth:midnightlib:${rootProject.midnightlib_version}-fabric"
+    // mcmti provides the SpeechRecognizer API this plugin implements (resolved locally from ./libs).
+    compileOnly "me.jaffe2718:mcmti-common:3.0.0"
+
+    // MidnightLib provides the config screen/API used by the plugin config.
+    // The Forge variant is used as the common compile-time reference (the
+    // common module compiles against Mojang mappings via legacyforge); the
+    // loader modules pick the artifact matching their own loader.
+    modCompileOnly "maven.modrinth:midnightlib:${midnightlib_version}-forge"
+
+    // DashScope SDK — compile against here; bundled per-platform via JiJ/jarJar.
+    compileOnly "com.alibaba:dashscope-sdk-java:${dashscope_sdk_version}"
+}
+
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }

@@ -27,7 +27,7 @@ public final class DashScopePluginFabric implements ClientModInitializer {
         DashScopeConfig.init(DashScopeConfig.MOD_ID, DashScopeConfig.class);
         SpeechRecognizer.register(
                 0,
-                ResourceLocation.fromNamespaceAndPath(DashScopeConfig.MOD_ID, "dashscope"),
+                new ResourceLocation(DashScopeConfig.MOD_ID, "dashscope"),
                 DashScopeSpeechRecognizer::new
         );
         LOGGER.info("mcmti-dashscope-plugin: DashScope recognizer registered (priority 0)");
